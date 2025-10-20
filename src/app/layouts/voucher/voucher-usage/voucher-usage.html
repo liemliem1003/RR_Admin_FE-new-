@@ -1,0 +1,24 @@
+<div class="voucher-subtab">
+  <h5 class="fw-bold mb-3">Lịch sử sử dụng Voucher</h5>
+
+  <div class="card shadow-sm border-0">
+    <table class="table align-middle mb-0">
+      <thead class="table-light text-muted">
+        <tr>
+          <th>Người dùng</th>
+          <th>Mã đơn hàng</th>
+          <th>Số tiền giảm</th>
+          <th>Thời gian</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of usages">
+          <td>{{ u.user }}</td>
+          <td>{{ u.order }}</td>
+          <td class="text-success fw-semibold">{{ formatPrice(u.discount) }}</td>
+          <td>{{ u.used_at }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

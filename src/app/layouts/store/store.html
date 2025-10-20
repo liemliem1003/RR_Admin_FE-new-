@@ -1,0 +1,141 @@
+<div class="store-page container-fluid py-4 px-3 px-lg-5 bg-body-tertiary min-vh-100">
+
+  <!-- Header -->
+  <header class="page-header d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+      <h1 class="fw-bold fs-3 mb-1 text-dark">Quản lý Store</h1>
+      <p class="text-muted mb-0">Quản lý cửa hàng theo từng khu vực (Region)</p>
+    </div>
+
+    <div class="d-flex flex-wrap align-items-center gap-2">
+      <button class="btn btn-gradient-primary btn-lg shadow-sm" (click)="openModal()">
+        <i class="bi bi-plus-lg me-2"></i> Thêm Store
+      </button>
+    </div>
+  </header>
+
+  <!-- Bảng danh sách store -->
+  <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table align-middle table-hover mb-0">
+        <thead class="table-light text-uppercase small text-muted">
+          <tr>
+            <th>Store</th>
+            <th>Region</th>
+            <th>Địa chỉ</th>
+            <th>Điện thoại</th>
+            <th>Email</th>
+            <th>Điểm Loyalty</th>
+            <th class="text-end">Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of stores" class="transition-hover">
+            <td class="fw-semibold text-dark">{{ s.name }}</td>
+
+            <td>
+              <ng-container *ngIf="s.region; else noRegion">
+                {{ s.region.name }}
+                <span *ngIf="s.region.code" class="text-muted small">({{ s.region.code }})</span>
+              </ng-container>
+              <ng-template #noRegion>
+                <span class="text-muted fst-italic">Chưa chọn</span>
+              </ng-template>
+            </td>
+
+            <td>{{ s.address || '-' }}</td>
+            <td>{{ s.phone || '-' }}</td>
+            <td>{{ s.email || '-' }}</td>
+            <td><span class="badge bg-light text-dark px-3 py-2">{{ s.current_loyalty_point }}</span></td>
+
+            <td class="text-end">
+              <button class="btn btn-sm btn-outline-primary me-1" (click)="editStore(s); openModal()">
+                <i class="bi bi-pencil-fill"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" (click)="deleteStore(s)">
+                <i class="bi bi-trash-fill"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal popup tạo/sửa store -->
+  <div class="modal fade" tabindex="-1" [ngClass]="{show: modalOpen}" [style.display]="modalOpen ? 'block' : 'none'">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 rounded-4 shadow-lg">
+        <div class="modal-header bg-gradient-light border-0 rounded-top-4">
+          <h5 class="modal-title fw-bold text-dark mb-0">{{ editingStore ? 'Sửa Store' : 'Tạo Store mới' }}</h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+
+        <div class="modal-body">
+          <form (ngSubmit)="saveStore()" class="row g-3">
+
+            <div class="col-md-6">
+              <label for="name" class="form-label fw-semibold">Tên Store</label>
+              <input id="name" type="text" [(ngModel)]="store.name" name="name"
+                class="form-control form-control-lg" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="region" class="form-label fw-semibold">Region</label>
+              <select id="region" [(ngModel)]="store.region" name="region" class="form-select form-select-lg"
+                [compareWith]="compareRegions" required>
+                <option *ngFor="let r of regions" [ngValue]="r">{{ r.name }}</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="address" class="form-label fw-semibold">Địa chỉ</label>
+              <input id="address" type="text" [(ngModel)]="store.address" name="address"
+                class="form-control form-control-lg">
+            </div>
+
+            <div class="col-md-6">
+              <label for="phone" class="form-label fw-semibold">Điện thoại</label>
+              <input id="phone" type="text" [(ngModel)]="store.phone" name="phone"
+                class="form-control form-control-lg">
+            </div>
+
+            <div class="col-md-6">
+              <label for="email" class="form-label fw-semibold">Email</label>
+              <input id="email" type="email" [(ngModel)]="store.email" name="email"
+                class="form-control form-control-lg">
+            </div>
+
+            <div class="col-md-6">
+              <label for="latitude" class="form-label fw-semibold">Vĩ độ (Latitude)</label>
+              <input id="latitude" type="number" step="any" [(ngModel)]="latitude" name="latitude"
+                class="form-control form-control-lg" placeholder="10.762622">
+            </div>
+
+            <div class="col-md-6">
+              <label for="longitude" class="form-label fw-semibold">Kinh độ (Longitude)</label>
+              <input id="longitude" type="number" step="any" [(ngModel)]="longitude" name="longitude"
+                class="form-control form-control-lg" placeholder="106.660172">
+            </div>
+
+            <div class="col-12" *ngIf="latitude && longitude">
+              <div class="alert alert-info py-2 rounded-3">
+                <i class="bi bi-geo-alt-fill me-1 text-primary"></i>
+                <strong>Location:</strong> POINT({{ longitude }}, {{ latitude }})
+              </div>
+            </div>
+
+            <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+              <button type="submit" class="btn btn-gradient-primary px-4">
+                <i class="bi bi-check-lg me-1"></i> Lưu
+              </button>
+              <button type="button" class="btn btn-outline-secondary px-4" (click)="closeModal()">Hủy</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

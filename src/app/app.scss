@@ -1,0 +1,21 @@
+.content-wrapper {
+  margin-left: 250px; /* bằng width của nav khi mở */
+  margin-top: 60px;   /* bằng height của header */
+  padding: 1rem;
+  transition: margin-left 0.3s ease;
+}
+
+.left-nav.collapsed ~ .content-wrapper {
+  margin-left: 70px;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  .content-wrapper {
+    margin-left: 0 !important;
+    margin-top: 60px; /* vẫn giữ header */
+  }
+}
+* {
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}

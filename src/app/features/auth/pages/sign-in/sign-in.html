@@ -1,0 +1,128 @@
+<div class="auth-wrapper">
+  <div class="auth-content text-center">
+    <div class="card borderless">
+      <div class="row align-items-center text-center">
+        <div class="col">
+          <div class="card-body">
+            <img src="assets/images/logo-dark.svg" alt="" class="img-fluid mb-4" />
+            <h4 class="mb-3 f-w-400">
+              {{ mode === 'login' ? 'Sign in' : 'Sign up' }}
+            </h4>
+
+            <!-- LOGIN FORM -->
+            <form
+              *ngIf="mode === 'login'"
+              [formGroup]="loginForm"
+              (ngSubmit)="onSubmit()"
+            >
+              <div class="input-group mb-3">
+                <span class="input-group-text"><i data-feather="mail"></i></span>
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Email address"
+                  formControlName="email"
+                />
+              </div>
+
+              <div class="input-group mb-3">
+                <span class="input-group-text"><i data-feather="lock"></i></span>
+                <input
+                  type="password"
+                  class="form-control"
+                  placeholder="Password"
+                  formControlName="password"
+                />
+              </div>
+
+              <div *ngIf="error" class="alert alert-danger py-1">
+                {{ error }}
+              </div>
+
+              <button
+                class="btn btn-block btn-primary mb-4 w-100"
+                type="submit"
+                [disabled]="loading"
+              >
+                {{ loading ? 'Signing in...' : 'Sign in' }}
+              </button>
+
+              <p class="mb-0 text-muted">
+                Don’t have an account?
+                <a href="javascript:void(0)" class="f-w-400" (click)="toggleMode()">
+                  Sign up
+                </a>
+              </p>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form
+              *ngIf="mode === 'register'"
+              [formGroup]="registerForm"
+              (ngSubmit)="onSubmit()"
+            >
+              <div class="input-group mb-3">
+                <span class="input-group-text"><i data-feather="user"></i></span>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Full name"
+                  formControlName="name"
+                />
+              </div>
+
+              <div class="input-group mb-3">
+                <span class="input-group-text"><i data-feather="mail"></i></span>
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Email address"
+                  formControlName="email"
+                />
+              </div>
+
+              <div class="input-group mb-3">
+                <span class="input-group-text"><i data-feather="lock"></i></span>
+                <input
+                  type="password"
+                  class="form-control"
+                  placeholder="Password"
+                  formControlName="password"
+                />
+              </div>
+
+              <div class="input-group mb-3">
+                <span class="input-group-text"><i data-feather="phone"></i></span>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Phone number"
+                  formControlName="phone"
+                />
+              </div>
+
+              <div *ngIf="error" class="alert alert-danger py-1">
+                {{ error }}
+              </div>
+
+              <button
+                class="btn btn-block btn-primary mb-4 w-100"
+                type="submit"
+                [disabled]="loading"
+              >
+                {{ loading ? 'Signing up...' : 'Sign up' }}
+              </button>
+
+              <p class="mb-0 text-muted">
+                Already have an account?
+                <a href="javascript:void(0)" class="f-w-400" (click)="toggleMode()">
+                  Sign in
+                </a>
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

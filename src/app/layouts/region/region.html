@@ -1,0 +1,187 @@
+<div class="region-page container-fluid py-4 px-3 px-lg-5 bg-body-tertiary min-vh-100">
+
+  <!-- Header -->
+  <header class="page-header d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+      <h1 class="fw-bold fs-3 mb-1 text-dark">Quản lý Region</h1>
+      <small class="text-muted">Quản lý khu vực theo cấp độ (Country, City, District,...)</small>
+    </div>
+    <button class="btn btn-gradient-primary btn-lg shadow-sm" (click)="openModal()">
+      <i class="bi bi-plus-lg me-2"></i> Thêm Region
+    </button>
+  </header>
+
+  <!-- Filter / Search -->
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <!-- <input
+      type="text"
+      class="form-control w-auto"
+      placeholder="Tìm theo tên vùng..."
+      [(ngModel)]="filterName"
+    />
+    <select class="form-select w-auto" [(ngModel)]="filterLevel">
+      <option [ngValue]="null">-- Tất cả cấp độ --</option>
+      <option [ngValue]="0">Country</option>
+      <option [ngValue]="1">City</option>
+      <option [ngValue]="2">District</option>
+    </select> -->
+  </div>
+
+  <!-- Empty -->
+  <div *ngIf="regions.length === 0" class="text-center py-5 text-muted">
+    <i class="bi bi-geo-alt display-5 d-block mb-3"></i>
+    <div>Không có khu vực nào</div>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="regions.length > 0" class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0 align-middle">
+        <thead class="table-light text-uppercase text-muted small">
+          <tr>
+            <th>Ảnh</th>
+            <th>Tên vùng</th>
+            <th>Mã vùng</th>
+            <th>Cấp độ</th>
+            <th class="text-end">Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let r of regions"
+            class="transition-hover"
+          >
+            <td>
+              <img
+                *ngIf="r.img"
+                [src]="r.img"
+                alt="{{ r.name }}"
+                class="img-thumbnail shadow-sm rounded-3"
+                style="max-height: 50px;"
+              />
+            </td>
+            <td class="fw-semibold">{{ r.name }}</td>
+            <td>{{ r.code || '-' }}</td>
+            <td>
+              <span
+                class="badge rounded-pill"
+                [ngClass]="{
+                  'bg-primary': r.level === 0,
+                  'bg-info text-dark': r.level === 1,
+                  'bg-warning text-dark': r.level === 2
+                }"
+              >
+                {{ r.level === 0 ? 'Country' : r.level === 1 ? 'City' : 'District' }}
+              </span>
+            </td>
+            <td class="text-end">
+              <button
+                class="btn btn-sm btn-outline-primary me-1"
+                (click)="editRegion(r)"
+              >
+                <i class="bi bi-pencil-fill"></i>
+              </button>
+              <button
+                class="btn btn-sm btn-outline-danger"
+                (click)="deleteRegion(r)"
+              >
+                <i class="bi bi-trash-fill"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    tabindex="-1"
+    [ngClass]="{ show: modalOpen }"
+    [style.display]="modalOpen ? 'block' : 'none'"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg rounded-4 border-0">
+        <div class="modal-header bg-gradient-light">
+          <h5 class="modal-title fw-bold">
+            {{ editingRegion ? 'Sửa Region' : 'Tạo Region mới' }}
+          </h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="saveRegion()">
+            <div class="mb-3">
+              <label for="name" class="form-label">Tên vùng</label>
+              <input
+                id="name"
+                type="text"
+                [(ngModel)]="region.name"
+                name="name"
+                class="form-control form-control-lg"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="code" class="form-label">Mã vùng</label>
+              <input
+                id="code"
+                type="text"
+                [(ngModel)]="region.code"
+                name="code"
+                class="form-control form-control-lg"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="level" class="form-label">Cấp độ</label>
+              <select
+                id="level"
+                [(ngModel)]="region.level"
+                name="level"
+                class="form-select form-select-lg"
+              >
+                <option [value]="0">0 - Country</option>
+                <option [value]="1">1 - City</option>
+                <option [value]="2">2 - District</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="img" class="form-label">Ảnh</label>
+              <input
+                type="file"
+                id="img"
+                class="form-control"
+                (change)="onFileSelected($event)"
+              />
+              <div *ngIf="region.img" class="mt-2 text-center">
+                <img
+                  [src]="region.img"
+                  alt="Preview"
+                  class="img-thumbnail shadow-sm rounded-3"
+                  style="max-height:100px;"
+                />
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+              <button type="submit" class="btn btn-gradient-primary">
+                <i class="bi bi-check-lg me-1"></i> Lưu
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="closeModal()"
+              >
+                Hủy
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,254 @@
+@import 'style';
+
+:root {
+  --color-bg-dark: #1f2937;
+  --color-bg-darker: #111827;
+  --color-text-light: #f3f4f6;
+  --color-text-muted: #9ca3af;
+  --color-primary: #2563eb;
+  --color-hover: rgba(255, 255, 255, 0.1);
+  --color-hover-light: rgba(255, 255, 255, 0.05);
+  --color-border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  margin: 0;
+  color: var(--color-text-light);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* HEADER */
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-bg-darker);
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 100;
+}
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-link {
+  color: var(--color-text-light);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.collapse-toggle {
+  background: transparent;
+  border: none;
+  color: var(--color-text-light);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.page-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* USER MENU */
+.top-right {
+  position: relative;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 0.5rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.user-menu:hover {
+  background-color: var(--color-hover-light);
+}
+
+.user-menu.open .dropdown {
+  display: block;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-primary);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+ul {
+    list-style-type: none;
+}
+.username {
+  font-weight: 600;
+}
+
+.role {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.user-menu .chev {
+  font-size: 0.8rem;
+  margin-left: 0.25rem;
+  transition: transform 0.3s;
+}
+
+.user-menu.open .chev {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: var(--color-bg-dark);
+  border-radius: 6px;
+  margin-top: 0.5rem;
+  min-width: 140px;
+  display: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  z-index: 10;
+  overflow: hidden;
+}
+
+.dropdown li a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: var(--color-text-light);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.dropdown li a:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+/* LEFT NAV */
+.left-nav {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 250px;
+  height: calc(100% - 60px);
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-light);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+  transform: translateX(-100%);
+  z-index: 90;
+  overflow-y: auto;
+}
+
+.left-nav.collapsed {
+  transform: translateX(0);
+}
+
+.nav-list {
+  padding: 0.5rem 0;
+  flex-grow: 1;
+}
+
+.nav-item {
+  margin-bottom: 0.25rem;
+}
+
+.nav-link,
+.group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--color-text-light);
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  box-sizing: border-box;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover,
+.group-toggle:hover,
+.sub-link:hover {
+  background-color: var(--color-hover);
+}
+
+.nav-link.active,
+.sub-link.active {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.nav-item .icon {
+  width: 24px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.sub-list {
+  list-style: none;
+  padding-left: 1rem;
+  margin: 0.25rem 0 0 0;
+}
+
+.sub-item {
+  margin-bottom: 0.2rem;
+}
+
+.sub-link {
+  display: block;
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--color-text-light);
+  font-size: 0.95rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.chev {
+  margin-left: auto;
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}
+
+.group-toggle[aria-expanded="true"] .chev {
+  transform: rotate(90deg);
+}
+
+/* MAIN CONTENT */
+.main-content {
+  padding: 1rem;
+  margin-top: 60px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .left-nav {
+    width: 70%;
+  }
+}

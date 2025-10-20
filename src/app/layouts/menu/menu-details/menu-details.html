@@ -1,0 +1,147 @@
+<div class="menu-details-page container-fluid py-4 px-3 px-lg-5 bg-body-tertiary min-vh-100">
+
+  <!-- Header -->
+  <header class="page-header d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+      <h1 class="fw-bold fs-3 mb-1 text-dark">
+        {{ menu?.name || 'Chi tiết Menu' }}
+      </h1>
+      <p class="text-muted mb-0">
+        Cửa hàng: <span class="fw-semibold">{{ menu?.store?.name }}</span>
+        <span *ngIf="menu?.is_default" class="badge bg-primary ms-2">Mặc định</span>
+      </p>
+    </div>
+
+    <button class="btn btn-primary btn-lg shadow-sm d-flex align-items-center gap-2" (click)="openModal()">
+      <i class="bi bi-plus-circle"></i>
+      <span>Thêm món</span>
+    </button>
+  </header>
+
+  <!-- Toolbar -->
+  <section class="toolbar card border-0 shadow-sm mb-4 rounded-4">
+    <div class="card-body d-flex flex-wrap gap-3 align-items-center justify-content-between">
+      <div class="d-flex flex-wrap gap-3 align-items-center">
+        <div class="input-group search-box">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <!-- <input type="text" class="form-control" placeholder="Tìm món theo tên..."
+                 [(ngModel)]="search" (keyup.enter)="loadMenuItems()" /> -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Table -->
+  <section class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light text-muted text-uppercase small">
+          <tr>
+            <th class="ps-4">#</th>
+            <th>Hình ảnh</th>
+            <th>Tên hiển thị</th>
+            <th>Giá gốc</th>
+            <th>Giá bán</th>
+            <th class="text-center">Trạng thái</th>
+            <th class="text-end pe-4">Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of menuItems; let i = index">
+            <td class="ps-4 fw-semibold text-dark">{{ i + 1 }}</td>
+            <td>
+              <img *ngIf="item.product.image_url"
+                   [src]="item.product.image_url"
+                   [alt]="item.display_name"
+                   class="img-thumbnail rounded shadow-sm"
+                   style="max-height: 60px;">
+            </td>
+            <td>{{ item.display_name || '-' }}</td>
+            <td>{{ item.product.base_price | number }}</td>
+            <td>
+              <input type="number" class="form-control form-control-sm"
+                     [(ngModel)]="item.price" min="0" style="width: 120px;">
+            </td>
+            <td class="text-center">
+              <div class="form-check form-switch d-flex justify-content-center">
+                <input type="checkbox" class="form-check-input" [(ngModel)]="item.available">
+              </div>
+            </td>
+            <td class="text-end pe-4">
+              <button class="btn btn-sm btn-outline-success me-1" (click)="saveItem(item)" title="Lưu">
+                <i class="bi bi-save"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" (click)="deleteItem(item.id)" title="Xóa">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="!menuItems?.length">
+            <td colspan="7" class="text-center py-4 text-muted">
+              <i class="bi bi-inbox text-secondary fs-4 d-block mb-2"></i>
+              Chưa có món nào trong menu này.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div class="modal fade"
+       tabindex="-1"
+       [ngClass]="{ show: modalOpen }"
+       [style.display]="modalOpen ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-header bg-body-secondary border-0 rounded-top-4">
+          <h5 class="modal-title fw-bold mb-0">
+            <i class="bi bi-bag-plus me-2 text-primary"></i>
+            Thêm sản phẩm vào menu
+          </h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light text-muted text-uppercase small">
+                <tr>
+                  <th>Chọn</th>
+                  <th>Tên sản phẩm</th>
+                  <th>Giá gốc</th>
+                  <th>Giá menu</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of products">
+                  <td><input type="checkbox" [(ngModel)]="product.selected"></td>
+                  <td>{{ product.name }}</td>
+                  <td>{{ product.base_price | number }}</td>
+                  <td>
+                    <input type="number"
+                           [(ngModel)]="product.priceOverride"
+                           class="form-control form-control-sm"
+                           min="0"
+                           style="width: 120px;">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="modal-footer d-flex justify-content-end gap-2 p-3 border-top bg-body">
+          <button type="button" class="btn btn-outline-secondary px-4" (click)="closeModal()">
+            <i class="bi bi-x-circle me-1"></i> Hủy
+          </button>
+          <button type="button" class="btn btn-primary px-4" (click)="addSelectedProducts()">
+            <i class="bi bi-check-circle me-1"></i> Thêm vào menu
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

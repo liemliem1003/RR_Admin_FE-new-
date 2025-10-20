@@ -1,0 +1,24 @@
+<div class="voucher-subtab">
+  <h5 class="fw-bold mb-3">Liên kết Voucher với Sản phẩm</h5>
+
+  <div class="card shadow-sm border-0">
+    <table class="table align-middle mb-0">
+      <thead class="table-light text-muted">
+        <tr>
+          <th>Tên sản phẩm</th>
+          <th>Giá</th>
+          <th class="text-end">Đã liên kết</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of products">
+          <td>{{ p.name }}</td>
+          <td>{{ formatPrice(p.price) }}</td>
+          <td class="text-end">
+            <input type="checkbox" [(ngModel)]="p.selected">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,89 @@
+<header class="top-bar">
+  <div class="top-left">
+    <button class="collapse-toggle" (click)="toggle()" aria-label="Toggle navigation">
+      ☰
+    </button>
+    <a routerLink="/" class="brand-link">MyApp</a>
+    <span class="page-title">{{ currentPage }}</span>
+  </div>
+
+  <div class="top-right">
+    <div class="user-menu" (click)="toggleUserMenu()" [class.open]="userMenuOpen">
+      <img src="assets/avatar.png" alt="User Avatar" class="avatar">
+      <div class="user-info">
+        <span class="username">{{ user.name }}</span>
+        <span class="role">{{ user.role }}</span>
+      </div>
+      <span class="chev">▾</span>
+
+      <ul class="dropdown">
+        <li><a routerLink="/profile">Profile</a></li>
+        <li><a (click)="logout()">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<!-- <nav class="left-nav" [class.collapsed]="collapsed">
+  <ul class="nav-list">
+    <li *ngFor="let item of items" class="nav-item" [class.has-children]="item.children?.length">
+      <a *ngIf="!item.children" [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">
+        <span class="icon" *ngIf="item.icon">{{ item.icon }}</span>
+        <span class="text">{{ item.label }}</span>
+      </a>
+
+      <div *ngIf="item.children" class="nav-group">
+        <button class="nav-link group-toggle" (click)="toggleGroup(item)" [attr.aria-expanded]="isOpen(item)">
+          <span class="icon" *ngIf="item.icon">{{ item.icon }}</span>
+          <span class="text">{{ item.label }}</span>
+          <span class="chev">▸</span>
+        </button>
+
+        <ul class="sub-list" *ngIf="isOpen(item)">
+          <li *ngFor="let child of item.children" class="sub-item">
+            <a [routerLink]="child.route" routerLinkActive="active" class="sub-link">{{ child.label }}</a>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+</nav> -->
+
+<nav class="left-nav" [class.collapsed]="collapsed">
+  <ul class="nav-list">
+    <li *ngFor="let item of items" class="nav-item" [class.has-children]="item.children?.length">
+      
+      <!-- Nếu không có children -->
+      <a *ngIf="!item.children"
+         [routerLink]="item.route"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{ exact: true }"
+         class="nav-link">
+        <i *ngIf="item.icon" [class]="item.icon + ' icon'"></i>
+        <span class="text">{{ item.label }}</span>
+      </a>
+
+      <!-- Nếu có children -->
+      <div *ngIf="item.children" class="nav-group">
+        <button class="nav-link group-toggle" (click)="toggleGroup(item)" [attr.aria-expanded]="isOpen(item)">
+          <i *ngIf="item.icon" [class]="item.icon + ' icon'"></i>
+          <span class="text">{{ item.label }}</span>
+          <i class="bi"
+             [ngClass]="{ 'bi-chevron-down': isOpen(item), 'bi-chevron-right': !isOpen(item) }"
+             class="chev"></i>
+        </button>
+
+        <ul class="sub-list" *ngIf="isOpen(item)">
+          <li *ngFor="let child of item.children" class="sub-item">
+            <a [routerLink]="child.route"
+               routerLinkActive="active"
+               class="sub-link">
+              {{ child.label }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </li>
+  </ul>
+</nav>

@@ -1,0 +1,148 @@
+<div class="menu-page container-fluid py-4 px-3 px-lg-5 bg-body-tertiary min-vh-100">
+
+  <!-- Header -->
+  <header class="page-header d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+      <h1 class="fw-bold fs-3 mb-1 text-dark">Quản lý Menu</h1>
+      <p class="text-muted mb-0">Quản lý danh sách menu theo cửa hàng</p>
+    </div>
+    <button class="btn btn-primary btn-lg shadow-sm d-flex align-items-center gap-2" (click)="openModal()">
+      <i class="bi bi-plus-circle"></i>
+      <span>Thêm Menu</span>
+    </button>
+  </header>
+
+  <!-- Toolbar -->
+  <section class="toolbar card border-0 shadow-sm mb-4 rounded-4">
+    <div class="card-body d-flex flex-wrap gap-3 align-items-center justify-content-between">
+
+      <div class="d-flex flex-wrap gap-3 align-items-center">
+        <div class="input-group search-box">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input type="text" class="form-control" placeholder="Tìm kiếm theo tên menu..."
+                 [(ngModel)]="searchMenu" (keyup.enter)="filteredMenus()" />
+        </div>
+
+        <div class="input-group search-box">
+          <span class="input-group-text"><i class="bi bi-shop"></i></span>
+          <input type="text" class="form-control" placeholder="Tìm kiếm theo cửa hàng..."
+                 [(ngModel)]="searchStore" (keyup.enter)="filteredMenus()" />
+        </div>
+
+        <select class="form-select filter-select" [(ngModel)]="filterDefault">
+          <option [ngValue]="null">-- Tất cả --</option>
+          <option [ngValue]="true">Default</option>
+          <option [ngValue]="false">Non-default</option>
+        </select>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Table -->
+  <section class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light text-muted text-uppercase small">
+          <tr>
+            <th class="ps-4">Tên Menu</th>
+            <th>Cửa hàng</th>
+            <th class="text-center">Mặc định</th>
+            <th>Ghi chú</th>
+            <th class="text-end pe-4">Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of filteredMenus()" class="transition-hover">
+            <td class="ps-4 fw-semibold text-dark">{{ m.name }}</td>
+            <td>{{ getStoreName(m) }}</td>
+            <td class="text-center">
+              <span *ngIf="m.is_default" class="badge bg-success">Yes</span>
+              <span *ngIf="!m.is_default" class="text-muted">No</span>
+            </td>
+            <td>{{ m.note || '-' }}</td>
+            <td class="text-end pe-4">
+              <button class="btn btn-sm btn-outline-primary me-1" (click)="editMenu(m)" title="Sửa">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger me-1" (click)="deleteMenu(m)" title="Xóa">
+                <i class="bi bi-trash"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-info" [routerLink]="['/menu-details', m.id]" title="Chi tiết">
+                <i class="bi bi-eye"></i>
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredMenus().length === 0">
+            <td colspan="5" class="text-center py-4 text-muted">
+              <i class="bi bi-inbox text-secondary fs-4 d-block mb-2"></i>
+              Không có menu nào được tìm thấy.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div class="modal fade" tabindex="-1"
+       [ngClass]="{ show: modalOpen }"
+       [style.display]="modalOpen ? 'block' : 'none'">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+
+        <div class="modal-header bg-body-secondary border-0 rounded-top-4">
+          <h5 class="modal-title fw-bold mb-0">
+            <i class="bi bi-pencil-square me-2 text-primary"></i>
+            {{ editingMenu ? 'Sửa Menu' : 'Tạo Menu mới' }}
+          </h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <form (ngSubmit)="saveMenu()">
+
+            <div class="mb-3">
+              <label for="store" class="form-label fw-semibold">Cửa hàng</label>
+              <select id="store" [(ngModel)]="menu.store_id" name="store_id"
+                      class="form-select form-select-lg shadow-sm" required>
+                <option [ngValue]="0" disabled>-- Chọn cửa hàng --</option>
+                <option *ngFor="let s of stores" [ngValue]="s.id">{{ s.name }}</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="name" class="form-label fw-semibold">Tên Menu</label>
+              <input id="name" type="text" [(ngModel)]="menu.name"
+                     name="name" class="form-control form-control-lg shadow-sm" required>
+            </div>
+
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox"
+                     [(ngModel)]="menu.is_default" name="is_default" id="is_default">
+              <label class="form-check-label" for="is_default">Menu mặc định</label>
+            </div>
+
+            <div class="mb-3">
+              <label for="note" class="form-label fw-semibold">Ghi chú</label>
+              <textarea id="note" [(ngModel)]="menu.note"
+                        name="note" class="form-control form-control-lg shadow-sm" rows="2"></textarea>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-check-circle me-1"></i> Lưu
+              </button>
+              <button type="button" class="btn btn-outline-secondary px-4" (click)="closeModal()">
+                <i class="bi bi-x-circle me-1"></i> Hủy
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
